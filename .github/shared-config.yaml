@@ -1,0 +1,15 @@
+esphome:
+  name: test-tcs
+
+esp32:
+  board: "esp32dev"
+
+wifi:
+  ssid: "My Network"
+  password: "My Password"
+
+api:
+
+tcs_intercom:
+  rx_pin: 22
+  tx_pin: 23
