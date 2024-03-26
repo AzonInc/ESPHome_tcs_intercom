@@ -1,12 +1,12 @@
-TCS Intercom component
+TCS Intercom Component
 ===================
 
-The ``tcs_intercom`` allows you to easily communicate on a TCS:Bus with ESPHome and Home Assistant.
+The ``tcs_intercom`` Component allows you to easily communicate on a TCS:Bus with ESPHome and Home Assistant.
 
 Basic ESPHome Configuration Entry:
 ```
 external_components:
-  - source: github://AzonInc/esphome_tcs_intercom
+  - source: github://AzonInc/ESPHome-TCS-Intercom
 
 tcs_intercom:
 ```
@@ -14,7 +14,7 @@ tcs_intercom:
 Example of a Configuration Entry, which generates a binary_sensor entity that goes to on when receiving the Apartment Doorbell Command (in this case 0x1c30ba41), and a button entity that when pressed sends the command to open entrance door:
 ```
 external_components:
-  - source: github://AzonInc/esphome_tcs_intercom
+  - source: github://AzonInc/ESPHome-TCS-Intercom
 	
 tcs_intercom:
 
@@ -34,7 +34,7 @@ button:
 Full Configuration:
 ```
 external_components:
-  - source: github://AzonInc/esphome_tcs_intercom
+  - source: github://AzonInc/ESPHome-TCS-Intercom
 	
 tcs_intercom:
   rx_pin: GPIO22
