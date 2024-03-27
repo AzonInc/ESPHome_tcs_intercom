@@ -31,7 +31,10 @@ namespace esphome
             this->rx_pin_->attach_interrupt(TCSComponentStore::gpio_intr, &this->store_, gpio::INTERRUPT_ANY_EDGE);
 
             // Reset Sensors
-            this->bus_command_->publish_state("");
+            if (this->bus_command_ != nullptr)
+            {
+                this->bus_command_->publish_state("");
+            }
 
             for (auto &listener : listeners_)
             {

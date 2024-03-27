@@ -3,7 +3,7 @@ TCS Intercom Component
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AzonInc/ESPHome-TCS-Intercom/build.yaml?branch=master&style=for-the-badge&logo=buddy&logoColor=ffffff&label=Build)
 ===================
 
-The ``tcs_intercom`` Component allows you to easily communicate on a TCS:Bus with ESPHome and Home Assistant.
+The `tcs_intercom` Component allows you to easily communicate on a [TCS:Bus](https://www.tcsag.de/) with ESPHome and Home Assistant.
 
 Minimal ESPHome Configuration:
 ```YAML
