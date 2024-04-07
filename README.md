@@ -1,9 +1,9 @@
-TCS Intercom Component
+TCS/Koch Intercom Component
 ===================
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AzonInc/ESPHome-TCS-Intercom/build.yaml?branch=master&style=for-the-badge&logo=buddy&logoColor=ffffff&label=Build)
 ===================
 
-The `tcs_intercom` Component allows you to easily communicate on a [TCS:Bus](https://www.tcsag.de/) with ESPHome and Home Assistant.
+The `tcs_intercom` Component allows you to easily communicate on a [TCS:Bus](https://www.tcsag.de/) and [Koch TC:Bus](https://kochag.ch/) with ESPHome and Home Assistant.
 
 Minimal ESPHome Configuration:
 ```YAML
@@ -186,12 +186,12 @@ on_...:
 ## Credits
 
 **[TCSIntercomArduino](https://github.com/atc1441/TCSintercomArduino)**\
-Different Methods to read from and write to the TCS Bus.\
+Different Methods to read from and write to the TCS/TC Bus.\
 Feel free to watch the [Reverse Engineering Video](https://www.youtube.com/watch?v=xFLoauqj9yA&t=11s) if you're interested.
 
 **[tcs-monitor](https://github.com/Syralist/tcs-monitor)**\
-An mqtt monitor for listening to the TCS Bus.\
+An mqtt monitor for listening to the TCS/TC Bus.\
 You can find more information in this [Blog Post](https://blog.syralist.de/posts/smarthome/klingel/).
 
 **[Doorman](https://github.com/peteh/doorman)**\
-A custom Firmware for ESP8266 / ESP32 to control a TCS Intercom.
+A custom Firmware for ESP8266 / ESP32 to control a TCS/Koch Intercom.
