@@ -2,4 +2,4 @@ packages:
   common: !include shared-config.yaml
 
 external_components:
-  - source: github://AzonInc/ESPHome-TCS-Intercom@master
+  - source: github://AzonInc/ESPHome_tcs_intercom@master

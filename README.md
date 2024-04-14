@@ -1,6 +1,6 @@
 TCS/Koch Intercom Component
 ===================
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AzonInc/ESPHome-TCS-Intercom/build.yaml?branch=master&style=for-the-badge&logo=buddy&logoColor=ffffff&label=Build)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AzonInc/ESPHome_tcs_intercom/build.yaml?branch=master&style=for-the-badge&logo=buddy&logoColor=ffffff&label=Build)
 ===================
 
 The `tcs_intercom` Component allows you to easily communicate on a [TCS:Bus](https://www.tcsag.de/) and [Koch TC:Bus](https://kochag.ch/) with ESPHome and Home Assistant.
@@ -8,7 +8,7 @@ The `tcs_intercom` Component allows you to easily communicate on a [TCS:Bus](htt
 Minimal ESPHome Configuration:
 ```YAML
 external_components:
-  - source: github://AzonInc/ESPHome-TCS-Intercom
+  - source: github://AzonInc/ESPHome_tcs_intercom
 
 tcs_intercom:
 ```
@@ -16,7 +16,7 @@ tcs_intercom:
 Example of a Configuration, which generates a binary_sensor entity that goes to on when receiving the Apartment Doorbell Command (in this case 0x1c30ba41), and a button entity that when pressed sends the command to open entrance door:
 ```YAML
 external_components:
-  - source: github://AzonInc/ESPHome-TCS-Intercom
+  - source: github://AzonInc/ESPHome_tcs_intercom
 
 tcs_intercom:
 
@@ -36,7 +36,7 @@ button:
 Full Configuration:
 ```YAML
 external_components:
-  - source: github://AzonInc/ESPHome-TCS-Intercom
+  - source: github://AzonInc/ESPHome_tcs_intercom
 
 tcs_intercom:
   rx_pin: GPIO22
