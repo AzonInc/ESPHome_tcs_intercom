@@ -22,7 +22,7 @@ CONFIG_SCHEMA = cv.All(
             cv.Required(CONF_COMMAND): cv.hex_uint32_t,
             cv.Optional(CONF_ICON, default="mdi:doorbell"): cv.icon,
             cv.Optional(CONF_NAME, default="Doorbell"): cv.string,
-            cv.Optional(CONF_AUTO_OFF, default="3s"): cv.positive_time_period_seconds
+            cv.Optional(CONF_AUTO_OFF, default="3s"): cv.positive_time_period_milliseconds
         }
     ),
 )

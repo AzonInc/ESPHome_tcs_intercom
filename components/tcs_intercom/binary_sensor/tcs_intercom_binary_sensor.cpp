@@ -9,7 +9,7 @@ namespace esphome
         void TCSIntercomBinarySensor::turn_on(uint32_t *timer, uint16_t auto_off)
         {
             this->publish_state(true);
-            if (auto_off > 0) *timer = millis() + (auto_off * 1000);
+            if (auto_off > 0) *timer = millis() + auto_off;
         }
 
         void TCSIntercomBinarySensor::turn_off(uint32_t *timer)
