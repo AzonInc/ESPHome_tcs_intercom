@@ -39,8 +39,8 @@ external_components:
   - source: github://AzonInc/ESPHome_tcs_intercom
 
 tcs_intercom:
-  rx_pin: GPIO22
-  tx_pin: GPIO23
+  rx_pin: GPIO9
+  tx_pin: GPIO8
   event: "tcs"
   bus_command:
     name: "Last Bus Command"
@@ -62,8 +62,8 @@ button:
 Configuration variables:
 ------------------------
 
-- **rx_pin** (*Optional*, pin): The pin used to receive commands. Defaults to ``GPIO47``.
-- **tx_pin** (*Optional*, pin): The pin used to transmitt commands. Defaults to ``GPIO48``.
+- **rx_pin** (*Optional*, pin): The pin used to receive commands. Defaults to ``GPIO9``.
+- **tx_pin** (*Optional*, pin): The pin used to transmitt commands. Defaults to ``GPIO8``.
 
 - <a id="eventlist">**event**</a>  (_Optional_, string): The name of the event that will be generated on home assistant when receiving a command from the bus. For example, if  set to `tcs`, the event generated will be "esphome.tcs".
 Read more about how to use it in the [event section](#event)
