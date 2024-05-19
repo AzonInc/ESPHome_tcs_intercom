@@ -62,7 +62,7 @@ namespace esphome
 
         void TCSComponent::loop()
         {
-            // Turn off binary sensor after ... seconds
+            // Turn off binary sensor after ... milliseconds
             uint32_t now_millis = millis();
             for (auto &listener : listeners_)
             { 

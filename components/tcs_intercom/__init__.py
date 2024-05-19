@@ -34,8 +34,8 @@ CONFIG_SCHEMA = cv.All(
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(TCSIntercom),
-            cv.Optional(CONF_RX_PIN, default=48): pins.internal_gpio_input_pin_schema,
-            cv.Optional(CONF_TX_PIN, default=47): pins.internal_gpio_output_pin_schema,
+            cv.Optional(CONF_RX_PIN, default=9): pins.internal_gpio_input_pin_schema,
+            cv.Optional(CONF_TX_PIN, default=8): pins.internal_gpio_output_pin_schema,
             cv.Optional(CONF_EVENT, default="tcs"): cv.string,
             cv.Optional(CONF_BUS_COMMAND): text_sensor.text_sensor_schema(
                 entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
