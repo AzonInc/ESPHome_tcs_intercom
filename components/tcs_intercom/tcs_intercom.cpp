@@ -5,6 +5,9 @@
 #include "esphome/core/application.h"
 #include <Arduino.h>
 
+#include "esp_efuse.h"
+#include "esp_efuse_table.h"
+
 namespace esphome
 {
     namespace tcs_intercom
@@ -20,6 +23,24 @@ namespace esphome
         void TCSComponent::setup()
         {
             ESP_LOGCONFIG(TAG, "Setting up TCS Intercom...");
+
+            #if defined(ESP32)
+            ESP_LOGD(TAG, "Check for Doorman Hardware Revision");
+
+            // Doorman Hardware Revision
+            uint8_t ver[3];
+            uint32_t value;
+            esp_efuse_read_block(EFUSE_BLK3, &value, 0, 24);
+            ver[0] = value >> 0;
+            ver[1] = value >> 8;
+            ver[2] = value >> 16;
+
+            if(ver[0] > 0)
+            {
+                ESP_LOGI(TAG, "Doorman Hardware detected: V%i.%i.%i", ver[0], ver[1], ver[2]);
+            }
+            #endif
+
 
             this->rx_pin_->setup();
             this->tx_pin_->setup();
