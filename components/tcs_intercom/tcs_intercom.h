@@ -53,6 +53,7 @@ namespace esphome
                 void register_listener(TCSIntercomListener *listener);
 
                 void set_bus_command_sensor(text_sensor::TextSensor *bus_command) { this->bus_command_ = bus_command; }
+                void set_hardware_version_sensor(text_sensor::TextSensor *hardware_version) { this->hardware_version_ = hardware_version; }
 
                 void send_command(uint32_t command);
                 void publish_command(uint32_t command);
@@ -68,6 +69,7 @@ namespace esphome
                 std::vector<TCSIntercomListener *> listeners_{};
 
                 text_sensor::TextSensor *bus_command_{nullptr};
+                text_sensor::TextSensor *hardware_version{nullptr};
         };
 
         template<typename... Ts> class TCSIntercomSendAction : public Action<Ts...>

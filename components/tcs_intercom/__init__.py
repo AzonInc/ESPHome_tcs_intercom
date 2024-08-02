@@ -24,6 +24,7 @@ CONF_EVENT = "event"
 CONF_COMMAND = "command"
 
 CONF_BUS_COMMAND = "bus_command"
+CONF_HARDWARE_VERSION = "hardware_version"
 
 MULTI_CONF = False
 
@@ -38,6 +39,10 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(CONF_TX_PIN, default=8): pins.internal_gpio_output_pin_schema,
             cv.Optional(CONF_EVENT, default="tcs"): cv.string,
             cv.Optional(CONF_BUS_COMMAND): text_sensor.text_sensor_schema(
+                entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+                icon="mdi:console-network",
+            ),
+            cv.Optional(CONF_HARDWARE_VERSION): text_sensor.text_sensor_schema(
                 entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
                 icon="mdi:console-network",
             ),
@@ -64,6 +69,10 @@ async def to_code(config):
     if CONF_BUS_COMMAND in config:
         sens = await text_sensor.new_text_sensor(config[CONF_BUS_COMMAND])
         cg.add(var.set_bus_command_sensor(sens))
+
+    if CONF_HARDWARE_VERSION in config:
+        sens = await text_sensor.new_text_sensor(config[CONF_HARDWARE_VERSION])
+        cg.add(var.set_hardware_version_sensor(sens))
 
 TCS_INTERCOM_SEND_SCHEMA = cv.Schema(
     {

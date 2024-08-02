@@ -38,6 +38,22 @@ namespace esphome
             if(ver[0] > 0)
             {
                 ESP_LOGI(TAG, "Doorman Hardware detected: V%i.%i.%i", ver[0], ver[1], ver[2]);
+                if (this->hardware_version_ != nullptr)
+                {
+                    this->hardware_version_->publish_state(std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]));
+                }
+            }
+            else
+            {
+                if (this->hardware_version_ != nullptr)
+                {
+                    this->hardware_version_->publish_state("Generic");
+                }
+            }
+            #else
+            if (this->hardware_version_ != nullptr)
+            {
+                this->hardware_version_->publish_state("Generic");
             }
             #endif
 
