@@ -69,7 +69,7 @@ namespace esphome
                 std::vector<TCSIntercomListener *> listeners_{};
 
                 text_sensor::TextSensor *bus_command_{nullptr};
-                text_sensor::TextSensor *hardware_version{nullptr};
+                text_sensor::TextSensor *hardware_version_{nullptr};
         };
 
         template<typename... Ts> class TCSIntercomSendAction : public Action<Ts...>
