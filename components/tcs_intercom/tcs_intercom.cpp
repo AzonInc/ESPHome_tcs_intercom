@@ -271,10 +271,21 @@ namespace esphome
 
             for (auto &listener : listeners_)
             {
-                if (listener->command_ == command)
+                if (listener->f_.has_value())
                 {
-                    ESP_LOGD(TAG, "Binary sensor fired! %x", listener->command_);
-                    listener->turn_on(&listener->timer_, listener->auto_off_);
+                    auto val = (*listener->f_)();
+                    
+                    if (val == command)
+                    {
+                        listener->turn_on(&listener->timer_, listener->auto_off_);
+                    }
+                }
+                else
+                {
+                    if (listener->command_ == command)
+                    {
+                        listener->turn_on(&listener->timer_, listener->auto_off_);
+                    }
                 }
             }
         }

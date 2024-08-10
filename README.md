@@ -51,6 +51,12 @@ binary_sensor:
     command: 0x1c30ba41
     auto_off: 5s
 
+  - platform: tcs_intercom
+    name: "Apartment Doorbell Lambda"
+    lambda: return 0x1c30ba41;
+    auto_off: 5s
+
+
 button:
   - platform: template
     name: Open Door
@@ -85,12 +91,13 @@ binary_sensor:
     command: 0x1c30ba41
 
   - platform: tcs_intercom
-    command: 0x0c30ba80
+    lambda: return 0x0c30ba80;
     name: Entrance Doorbell
     auto_off: 5s
 ```
 
-- **command** (**Required**, int): The command that when received sets the sensor to on.
+- **command** (**Optional**, int): The command that when received sets the sensor to on.
+- **lambda** (**Optional**, int): The command that when received sets the sensor to on.
 - **auto_off** (*Optional*,  [Time](https://esphome.io/guides/configuration-types#config-time)):  The time after which the sensor returns to off. If set to `0s` the sensor once it goes on, it stays there until it is turned off by an automation. Defaults to  `3s`.
 - **icon** (*Optional*, icon): Manually set the icon to use for the sensor in the frontend. Default to `mdi:doorbell`.
 - **id** (*Optional*, string): Manually specify the ID for code generation.

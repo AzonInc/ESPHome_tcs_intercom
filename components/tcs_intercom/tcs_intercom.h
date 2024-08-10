@@ -16,6 +16,7 @@ namespace esphome
         class TCSIntercomListener
         {
             public:
+                void set_template(std::function<optional<uint32_t>()> &&f) { this->f_ = f; }
                 void set_command(uint32_t command) { this->command_ = command; }
                 void set_auto_off(uint16_t auto_off) { this->auto_off_ = auto_off; }
 
@@ -25,6 +26,7 @@ namespace esphome
                 uint32_t timer_;
                 uint32_t command_;
                 uint16_t auto_off_;
+                optional<std::function<optional<uint32_t>()>> f_;
         };
 
         struct TCSComponentStore
