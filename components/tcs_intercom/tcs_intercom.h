@@ -16,6 +16,7 @@ namespace esphome
         class TCSIntercomListener
         {
             public:
+                void set_template(std::function<optional<uint32_t>()> &&f) { this->f_ = f; }
                 void set_command(uint32_t command) { this->command_ = command; }
                 void set_auto_off(uint16_t auto_off) { this->auto_off_ = auto_off; }
 
@@ -25,6 +26,7 @@ namespace esphome
                 uint32_t timer_;
                 uint32_t command_;
                 uint16_t auto_off_;
+                optional<std::function<optional<uint32_t>()>> f_;
         };
 
         struct TCSComponentStore
@@ -53,6 +55,7 @@ namespace esphome
                 void register_listener(TCSIntercomListener *listener);
 
                 void set_bus_command_sensor(text_sensor::TextSensor *bus_command) { this->bus_command_ = bus_command; }
+                void set_hardware_version_sensor(text_sensor::TextSensor *hardware_version) { this->hardware_version_ = hardware_version; }
 
                 void send_command(uint32_t command);
                 void publish_command(uint32_t command);
@@ -68,6 +71,7 @@ namespace esphome
                 std::vector<TCSIntercomListener *> listeners_{};
 
                 text_sensor::TextSensor *bus_command_{nullptr};
+                text_sensor::TextSensor *hardware_version_{nullptr};
         };
 
         template<typename... Ts> class TCSIntercomSendAction : public Action<Ts...>
