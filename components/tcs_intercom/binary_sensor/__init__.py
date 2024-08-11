@@ -27,7 +27,7 @@ CONFIG_SCHEMA = cv.All(
             cv.GenerateID(): cv.declare_id(TCSIntercomBinarySensor),
             cv.GenerateID(CONF_TCS_ID): cv.use_id(TCSIntercom),
             cv.Optional(CONF_LAMBDA): cv.returning_lambda,
-            cv.Optional(CONF_COMMAND, default=0): cv.hex_uint32_t,
+            cv.Optional(CONF_COMMAND): cv.hex_uint32_t,
             cv.Optional(CONF_ICON, default="mdi:doorbell"): cv.icon,
             cv.Optional(CONF_NAME, default="Doorbell"): cv.string,
             cv.Optional(CONF_AUTO_OFF, default="3s"): cv.positive_time_period_milliseconds
@@ -49,7 +49,7 @@ async def to_code(config):
 
     if CONF_COMMAND in config:
         cg.add(var.set_command(config[CONF_COMMAND]))
-        
+
     cg.add(var.set_auto_off(config[CONF_AUTO_OFF]))
 
     tcs_intercom = await cg.get_variable(config[CONF_TCS_ID])
