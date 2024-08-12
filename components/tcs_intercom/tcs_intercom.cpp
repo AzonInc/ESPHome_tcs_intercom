@@ -30,7 +30,7 @@ namespace esphome
         {
             ESP_LOGCONFIG(TAG, "Setting up TCS Intercom...");
 
-            #if defined(ESP32)
+            #ifdef USE_ESP_IDF
             ESP_LOGD(TAG, "Check for Doorman Hardware Revision");
 
             // Doorman Hardware Revision
