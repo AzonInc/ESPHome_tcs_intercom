@@ -140,6 +140,10 @@ namespace esphome
             *variable |= (1UL << bitPosition);
         }
 
+        uint8_t bitRead(uint32_t variable, int bitPosition) {
+            return (variable >> bitPosition) & 0x01;
+        }
+
         void IRAM_ATTR HOT TCSComponentStore::gpio_intr(TCSComponentStore *arg)
         {
             // Made by https://github.com/atc1441/TCSintercomArduino
@@ -338,7 +342,7 @@ namespace esphome
                 int curBit = 0;
                 for (uint8_t i = length; i > 0; i--)
                 {
-                    curBit = bitRead(command, i - 1);
+                    curBit = bitRead(&command, i - 1);
                     output_state = !output_state;
                     this->tx_pin_->digital_write(output_state);
                     delay(curBit ? TCS_ONE_BIT_MS : TCS_ZERO_BIT_MS);
