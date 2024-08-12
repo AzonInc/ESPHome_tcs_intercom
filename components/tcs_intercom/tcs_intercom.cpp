@@ -101,7 +101,7 @@ namespace esphome
                 ESP_LOGCONFIG(TAG, "  Event: disabled");
             }
 
-            ESP_LOGCONFIG(TAG, "  Hardware: %s", this->hardware_version_->get_state());
+            ESP_LOGCONFIG(TAG, "  Hardware: %s", this->hardware_version_->get_state().c_str());
         }
 
         void TCSComponent::loop()
