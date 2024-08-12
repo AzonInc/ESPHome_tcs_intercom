@@ -12,13 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Compile for master
-        if: github.ref == 'refs/heads/master'
-        uses: esphome/build-action@v2
-        with:
-          yaml_file: .github/example-project-master.yaml
-
-      - name: Compile for dev
+      - name: Compile for test
         if: github.ref != 'refs/heads/master'
         uses: esphome/build-action@v2
         with:

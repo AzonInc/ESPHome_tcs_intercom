@@ -5,6 +5,8 @@
 #include "esphome/core/application.h"
 #include <Arduino.h>
 
+#include "soc/efuse_reg.h"
+#include "soc/efuse_periph.h"
 #include "esp_efuse.h"
 #include "esp_efuse_table.h"
 
@@ -40,7 +42,7 @@ namespace esphome
                 ESP_LOGI(TAG, "Doorman Hardware detected: V%i.%i.%i", ver[0], ver[1], ver[2]);
                 if (this->hardware_version_ != nullptr)
                 {
-                    this->hardware_version_->publish_state(std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]));
+                    this->hardware_version_->publish_state("Doorman " + std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]));
                 }
             }
             else
