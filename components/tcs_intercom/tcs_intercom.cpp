@@ -342,7 +342,7 @@ namespace esphome
                 int curBit = 0;
                 for (uint8_t i = length; i > 0; i--)
                 {
-                    curBit = bitRead(&command, i - 1);
+                    curBit = bitRead(command, i - 1);
                     output_state = !output_state;
                     this->tx_pin_->digital_write(output_state);
                     delay(curBit ? TCS_ONE_BIT_MS : TCS_ZERO_BIT_MS);
