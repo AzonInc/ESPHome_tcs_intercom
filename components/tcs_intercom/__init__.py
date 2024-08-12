@@ -44,7 +44,7 @@ CONFIG_SCHEMA = cv.All(
             ),
             cv.Optional(CONF_HARDWARE_VERSION): text_sensor.text_sensor_schema(
                 entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
-                icon="mdi:console-network",
+                icon="mdi:router-network-wireless",
             ),
         }   
     )
