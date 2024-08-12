@@ -1,4 +1,7 @@
 #include "tcs_intercom.h"
+
+#include "esphome/core/application.h"
+#include "esphome/core/defines.h"
 #include "esphome/core/log.h"
 #include "esphome/core/hal.h"
 #include "esphome/components/api/custom_api_device.h"
@@ -136,17 +139,18 @@ namespace esphome
             // Made by https://github.com/atc1441/TCSintercomArduino
             static uint32_t curCMD;
             static uint32_t usLast;
-            static byte curCRC;
-            static byte calCRC;
-            static byte curLength;
-            static byte cmdIntReady;
-            static byte curPos;
+
+            static uint8_t curCRC;
+            static uint8_t calCRC;
+            static uint8_t curLength;
+            static uint8_t cmdIntReady;
+            static uint8_t curPos;
 
             uint32_t usNow = micros();
             uint32_t timeInUS = usNow - usLast;
             usLast = usNow;
 
-            byte curBit = 4;
+            uint8_t curBit = 4;
 
             if (timeInUS >= 1000 && timeInUS <= 2999)
             {
@@ -309,7 +313,7 @@ namespace esphome
                 this->sending = true;
 
                 int length = 16;
-                byte checksm = 1;
+                uint8_t checksm = 1;
                 bool isLongMessage = false;
                 bool output_state = false;
 
