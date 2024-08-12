@@ -101,7 +101,7 @@ namespace esphome
                 ESP_LOGCONFIG(TAG, "  Event: disabled");
             }
 
-            LOG_TEXT_SENSOR(TAG, "Bus Command", this->bus_command_);
+            ESP_LOGCONFIG(TAG, "  Hardware: " + this->hardware_version_);
         }
 
         void TCSComponent::loop()
