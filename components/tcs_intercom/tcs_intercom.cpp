@@ -13,6 +13,10 @@
 #include "esp_efuse.h"
 #include "esp_efuse_table.h"
 
+#ifdef USE_ARDUINO
+#include "Arduino.h"
+#endif
+
 #include <stdint.h>
 
 namespace esphome
