@@ -134,6 +134,10 @@ namespace esphome
         volatile uint8_t TCSComponentStore::s_cmdLength = 0;
         volatile bool TCSComponentStore::s_cmdReady = false;
 
+        void bitSet(uint8_t *variable, int bitPosition) {
+            *variable |= (1 << bitPosition);
+        }
+        
         void IRAM_ATTR HOT TCSComponentStore::gpio_intr(TCSComponentStore *arg)
         {
             // Made by https://github.com/atc1441/TCSintercomArduino
