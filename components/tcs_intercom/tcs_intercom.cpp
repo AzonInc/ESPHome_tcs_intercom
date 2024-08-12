@@ -1,12 +1,19 @@
 #include "tcs_intercom.h"
+
+#include "esphome/core/application.h"
+#include "esphome/core/defines.h"
 #include "esphome/core/log.h"
 #include "esphome/core/hal.h"
+
 #include "esphome/components/api/custom_api_device.h"
 #include "esphome/core/application.h"
-#include <Arduino.h>
 
+#include "soc/efuse_reg.h"
+#include "soc/efuse_periph.h"
 #include "esp_efuse.h"
 #include "esp_efuse_table.h"
+
+#include <stdint.h>
 
 namespace esphome
 {
@@ -24,8 +31,8 @@ namespace esphome
         {
             ESP_LOGCONFIG(TAG, "Setting up TCS Intercom...");
 
-            #if defined(ESP32)
-            ESP_LOGD(TAG, "Check for Doorman Hardware Revision");
+            #if defined(USE_ESP_IDF) || (defined(USE_ARDUINO) && defined(ESP32))
+            ESP_LOGD(TAG, "Check for Doorman Hardware");
 
             // Doorman Hardware Revision
             uint8_t ver[3];
@@ -40,7 +47,7 @@ namespace esphome
                 ESP_LOGI(TAG, "Doorman Hardware detected: V%i.%i.%i", ver[0], ver[1], ver[2]);
                 if (this->hardware_version_ != nullptr)
                 {
-                    this->hardware_version_->publish_state(std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]));
+                    this->hardware_version_->publish_state("Doorman " + std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]));
                 }
             }
             else
@@ -94,7 +101,7 @@ namespace esphome
                 ESP_LOGCONFIG(TAG, "  Event: disabled");
             }
 
-            LOG_TEXT_SENSOR(TAG, "Bus Command", this->bus_command_);
+            ESP_LOGCONFIG(TAG, "  Hardware: %s", this->hardware_version_->state.c_str());
         }
 
         void TCSComponent::loop()
@@ -130,22 +137,31 @@ namespace esphome
         volatile uint8_t TCSComponentStore::s_cmdLength = 0;
         volatile bool TCSComponentStore::s_cmdReady = false;
 
+        void bitSet(uint32_t *variable, int bitPosition) {
+            *variable |= (1UL << bitPosition);
+        }
+
+        uint8_t bitRead(uint32_t variable, int bitPosition) {
+            return (variable >> bitPosition) & 0x01;
+        }
+
         void IRAM_ATTR HOT TCSComponentStore::gpio_intr(TCSComponentStore *arg)
         {
             // Made by https://github.com/atc1441/TCSintercomArduino
             static uint32_t curCMD;
             static uint32_t usLast;
-            static byte curCRC;
-            static byte calCRC;
-            static byte curLength;
-            static byte cmdIntReady;
-            static byte curPos;
+
+            static uint8_t curCRC;
+            static uint8_t calCRC;
+            static uint8_t curLength;
+            static uint8_t cmdIntReady;
+            static uint8_t curPos;
 
             uint32_t usNow = micros();
             uint32_t timeInUS = usNow - usLast;
             usLast = usNow;
 
-            byte curBit = 4;
+            uint8_t curBit = 4;
 
             if (timeInUS >= 1000 && timeInUS <= 2999)
             {
@@ -188,7 +204,7 @@ namespace esphome
                 {
                     if (curBit)
                     {
-                        bitSet(curCMD, (curLength ? 33 : 17) - curPos);
+                        bitSet(&curCMD, (curLength ? 33 : 17) - curPos);
                     }
 
                     calCRC ^= curBit;
@@ -200,7 +216,7 @@ namespace esphome
                     {
                         if (curBit)
                         {
-                            bitSet(curCMD, 33 - curPos);
+                            bitSet(&curCMD, 33 - curPos);
                         }
 
                         calCRC ^= curBit;
@@ -216,7 +232,7 @@ namespace esphome
                 {
                     if (curBit)
                     {
-                        bitSet(curCMD, 33 - curPos);
+                        bitSet(&curCMD, 33 - curPos);
                     }
                     
                     calCRC ^= curBit;
@@ -308,7 +324,7 @@ namespace esphome
                 this->sending = true;
 
                 int length = 16;
-                byte checksm = 1;
+                uint8_t checksm = 1;
                 bool isLongMessage = false;
                 bool output_state = false;
 
@@ -325,7 +341,7 @@ namespace esphome
                 delay(isLongMessage ? TCS_ONE_BIT_MS : TCS_ZERO_BIT_MS);
 
                 int curBit = 0;
-                for (byte i = length; i > 0; i--)
+                for (uint8_t i = length; i > 0; i--)
                 {
                     curBit = bitRead(command, i - 1);
                     output_state = !output_state;
