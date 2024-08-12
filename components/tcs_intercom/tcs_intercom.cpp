@@ -4,6 +4,7 @@
 #include "esphome/core/defines.h"
 #include "esphome/core/log.h"
 #include "esphome/core/hal.h"
+
 #include "esphome/components/api/custom_api_device.h"
 #include "esphome/core/application.h"
 
@@ -30,13 +31,8 @@ namespace esphome
         {
             ESP_LOGCONFIG(TAG, "Setting up TCS Intercom...");
 
-            #ifdef USE_ARDUINO
-            ESP_LOGD(TAG, "Arduino");
-            #endif
-
-            #ifdef USE_ESP_IDF
-            ESP_LOGD(TAG, "IDF");
-            ESP_LOGD(TAG, "Check for Doorman Hardware Revision");
+            #if defined(USE_ESP_IDF) || (defined(USE_ARDUINO) && defined(ESP32))
+            ESP_LOGD(TAG, "Check for Doorman Hardware");
 
             // Doorman Hardware Revision
             uint8_t ver[3];
