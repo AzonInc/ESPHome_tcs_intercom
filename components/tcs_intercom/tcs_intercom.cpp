@@ -137,11 +137,11 @@ namespace esphome
         volatile uint8_t TCSComponentStore::s_cmdLength = 0;
         volatile bool TCSComponentStore::s_cmdReady = false;
 
-        void bitSet(uint32_t *variable, int bitPosition) {
+        void bitSetIDF(uint32_t *variable, int bitPosition) {
             *variable |= (1UL << bitPosition);
         }
 
-        uint8_t bitRead(uint32_t variable, int bitPosition) {
+        uint8_t bitReadIDF(uint32_t variable, int bitPosition) {
             return (variable >> bitPosition) & 0x01;
         }
 
@@ -204,7 +204,11 @@ namespace esphome
                 {
                     if (curBit)
                     {
-                        bitSet(&curCMD, (curLength ? 33 : 17) - curPos);
+                        #if defined(USE_ESP_IDF)
+                        bitSetIDF(&curCMD, (curLength ? 33 : 17) - curPos);
+                        #else
+                        bitSet(curCMD, (curLength ? 33 : 17) - curPos);
+                        #endif
                     }
 
                     calCRC ^= curBit;
@@ -216,7 +220,11 @@ namespace esphome
                     {
                         if (curBit)
                         {
-                            bitSet(&curCMD, 33 - curPos);
+                            #if defined(USE_ESP_IDF)
+                            bitSetIDF(&curCMD, 33 - curPos);
+                            #else
+                            bitSet(curCMD, 33 - curPos);
+                            #endif
                         }
 
                         calCRC ^= curBit;
@@ -232,7 +240,11 @@ namespace esphome
                 {
                     if (curBit)
                     {
-                        bitSet(&curCMD, 33 - curPos);
+                        #if defined(USE_ESP_IDF)
+                        bitSetIDF(&curCMD, 33 - curPos);
+                        #else
+                        bitSet(curCMD, 33 - curPos);
+                        #endif
                     }
                     
                     calCRC ^= curBit;
@@ -343,7 +355,11 @@ namespace esphome
                 int curBit = 0;
                 for (uint8_t i = length; i > 0; i--)
                 {
+                    #if defined(USE_ESP_IDF)
+                    curBit = bitReadIDF(command, i - 1);
+                    #else
                     curBit = bitRead(command, i - 1);
+                    #endif
                     output_state = !output_state;
                     this->tx_pin_->digital_write(output_state);
                     delay(curBit ? TCS_ONE_BIT_MS : TCS_ZERO_BIT_MS);
