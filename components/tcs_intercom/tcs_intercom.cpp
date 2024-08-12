@@ -336,7 +336,7 @@ namespace esphome
                 delay(isLongMessage ? TCS_ONE_BIT_MS : TCS_ZERO_BIT_MS);
 
                 int curBit = 0;
-                for (byte i = length; i > 0; i--)
+                for (uint8_t i = length; i > 0; i--)
                 {
                     curBit = bitRead(command, i - 1);
                     output_state = !output_state;
