@@ -199,7 +199,7 @@ namespace esphome
                 {
                     if (curBit)
                     {
-                        bitSet(curCMD, (curLength ? 33 : 17) - curPos);
+                        bitSet(&curCMD, (curLength ? 33 : 17) - curPos);
                     }
 
                     calCRC ^= curBit;
@@ -211,7 +211,7 @@ namespace esphome
                     {
                         if (curBit)
                         {
-                            bitSet(curCMD, 33 - curPos);
+                            bitSet(&curCMD, 33 - curPos);
                         }
 
                         calCRC ^= curBit;
@@ -227,7 +227,7 @@ namespace esphome
                 {
                     if (curBit)
                     {
-                        bitSet(curCMD, 33 - curPos);
+                        bitSet(&curCMD, 33 - curPos);
                     }
                     
                     calCRC ^= curBit;
