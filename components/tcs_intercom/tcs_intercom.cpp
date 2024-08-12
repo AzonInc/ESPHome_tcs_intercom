@@ -12,6 +12,8 @@
 #include "esp_efuse.h"
 #include "esp_efuse_table.h"
 
+#include <stdint.h>
+
 namespace esphome
 {
     namespace tcs_intercom
@@ -134,10 +136,10 @@ namespace esphome
         volatile uint8_t TCSComponentStore::s_cmdLength = 0;
         volatile bool TCSComponentStore::s_cmdReady = false;
 
-        void bitSet(uint8_t *variable, int bitPosition) {
-            *variable |= (1 << bitPosition);
+        void bitSet(uint32_t *variable, int bitPosition) {
+            *variable |= (1UL << bitPosition);
         }
-        
+
         void IRAM_ATTR HOT TCSComponentStore::gpio_intr(TCSComponentStore *arg)
         {
             // Made by https://github.com/atc1441/TCSintercomArduino
