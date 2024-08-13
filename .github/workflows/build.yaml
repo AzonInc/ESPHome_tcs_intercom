@@ -14,12 +14,12 @@ jobs:
 
       - name: Compile for master
         if: github.ref == 'refs/heads/master'
-        uses: esphome/build-action@v2
+        uses: esphome/build-action@v4.0.1
         with:
           yaml_file: .github/example-project-master.yaml
 
       - name: Compile for dev
-        if: github.ref != 'refs/heads/master'
-        uses: esphome/build-action@v2
+        if: github.ref != 'refs/heads/dev'
+        uses: esphome/build-action@v4.0.1
         with:
           yaml_file: .github/example-project-dev.yaml

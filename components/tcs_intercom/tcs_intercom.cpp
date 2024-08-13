@@ -379,9 +379,6 @@ namespace esphome
                 // Resume reading
                 ESP_LOGD(TAG, "Resume reading");
                 this->rx_pin_->attach_interrupt(TCSComponentStore::gpio_intr, &this->store_, gpio::INTERRUPT_ANY_EDGE);
-
-                // Publish received Command on Sensors, Events, etc.
-                this->publish_command(command);
             }
         }
 
