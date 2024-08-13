@@ -125,7 +125,7 @@ namespace esphome
             if(s.s_cmdReady)
             {
                 ESP_LOGD(TAG, "Received command %x", s.s_cmd);
-                this->publish_command(s.s_cmd);
+                this->publish_command(s.s_cmd, true);
 
                 s.s_cmdReady = false;
                 s.s_cmd = 0;
@@ -280,20 +280,11 @@ namespace esphome
             }
         }
 
-        void TCSComponent::publish_command(uint32_t command)
+        void TCSComponent::publish_command(uint32_t command, bool fire_events)
         {
             // Convert to HEX
             char byte_cmd[9];
             sprintf(byte_cmd, "%08x", command);
-
-            // Fire Home Assistant Event
-            if (strcmp(event_, "esphome.none") != 0)
-            {
-                auto capi = new esphome::api::CustomAPIDevice();
-
-                ESP_LOGD(TAG, "Send event to home assistant on %s", event_);
-                capi->fire_homeassistant_event(event_, {{"command", byte_cmd}});
-            }
 
             // Publish Command to Sensors
             if (this->bus_command_ != nullptr)
@@ -301,23 +292,36 @@ namespace esphome
                 this->bus_command_->publish_state(byte_cmd);
             }
 
-            for (auto &listener : listeners_)
+            if(fire_events)
             {
-                if (listener->f_.has_value())
+                // Fire Binary Sensors
+                for (auto &listener : listeners_)
                 {
-                    auto val = (*listener->f_)();
-                    
-                    if (val == command)
+                    if (listener->f_.has_value())
                     {
-                        listener->turn_on(&listener->timer_, listener->auto_off_);
+                        auto val = (*listener->f_)();
+                        
+                        if (val == command)
+                        {
+                            listener->turn_on(&listener->timer_, listener->auto_off_);
+                        }
+                    }
+                    else
+                    {
+                        if (listener->command_ == command)
+                        {
+                            listener->turn_on(&listener->timer_, listener->auto_off_);
+                        }
                     }
                 }
-                else
+                
+                // Fire Home Assistant Event
+                if (strcmp(event_, "esphome.none") != 0)
                 {
-                    if (listener->command_ == command)
-                    {
-                        listener->turn_on(&listener->timer_, listener->auto_off_);
-                    }
+                    auto capi = new esphome::api::CustomAPIDevice();
+
+                    ESP_LOGD(TAG, "Send event to home assistant on %s", event_);
+                    capi->fire_homeassistant_event(event_, {{"command", byte_cmd}});
                 }
             }
         }
@@ -379,6 +383,9 @@ namespace esphome
                 // Resume reading
                 ESP_LOGD(TAG, "Resume reading");
                 this->rx_pin_->attach_interrupt(TCSComponentStore::gpio_intr, &this->store_, gpio::INTERRUPT_ANY_EDGE);
+
+                // Publish received Command on Sensors, Events, etc.
+                this->publish_command(command, false);
             }
         }
 

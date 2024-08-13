@@ -58,7 +58,7 @@ namespace esphome
                 void set_hardware_version_sensor(text_sensor::TextSensor *hardware_version) { this->hardware_version_ = hardware_version; }
 
                 void send_command(uint32_t command);
-                void publish_command(uint32_t command);
+                void publish_command(uint32_t command, bool fire_events);
 
                 bool sending;
 
