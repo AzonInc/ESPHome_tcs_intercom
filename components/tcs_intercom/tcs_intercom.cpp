@@ -284,7 +284,7 @@ namespace esphome
         {
             // Convert to HEX
             char byte_cmd[9];
-            sprintf(byte_cmd, "%08x", command);
+            sprintf(byte_cmd, "%08X", command);
 
             // Publish Command to Sensors
             if (this->bus_command_ != nullptr)
