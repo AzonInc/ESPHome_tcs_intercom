@@ -33,7 +33,7 @@ namespace esphome
 
         void TCSComponent::setup()
         {
-            ESP_LOGCONFIG(TAG, "Setting up TCS Intercom...");
+            ESP_LOGCONFIG(TAG, "Setting up TCS Intercom (Glitch)...");
 
             #if defined(USE_ESP_IDF) || (defined(USE_ARDUINO) && defined(ESP32))
             ESP_LOGD(TAG, "Check for Doorman Hardware");
