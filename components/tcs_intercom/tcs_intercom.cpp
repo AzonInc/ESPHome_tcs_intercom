@@ -167,7 +167,11 @@ namespace esphome
 
             uint8_t curBit = 4;
 
-            if (timeInUS >= 1000 && timeInUS <= 2999)
+            if (timeInUS < 1000)
+            {
+                curBit = 5; // invalid glitches typical 29ms
+            }
+            else if (timeInUS >= 1000 && timeInUS <= 2999)
             {
                 curBit = 0;
             }
@@ -185,42 +189,63 @@ namespace esphome
                 curPos = 0;
             }
 
-            if (curPos == 0)
-            {
-                if (curBit == 2)
+            if (curBit != 5) { // skip processing for glitches
+                if (curPos == 0)
                 {
-                    curPos++;
-                }
-
-                curCMD = 0;
-                curCRC = 0;
-                calCRC = 1;
-                curLength = 0;
-            }
-            else if (curBit == 0 || curBit == 1)
-            {
-                if (curPos == 1)
-                {
-                    curLength = curBit;
-                    curPos++;
-                }
-                else if (curPos >= 2 && curPos <= 17)
-                {
-                    if (curBit)
+                    if (curBit == 2)
                     {
-                        #if defined(USE_ESP_IDF)
-                        bitSetIDF(&curCMD, (curLength ? 33 : 17) - curPos);
-                        #else
-                        bitSet(curCMD, (curLength ? 33 : 17) - curPos);
-                        #endif
+                        curPos++;
                     }
 
-                    calCRC ^= curBit;
-                    curPos++;
+                    curCMD = 0;
+                    curCRC = 0;
+                    calCRC = 1;
+                    curLength = 0;
                 }
-                else if (curPos == 18)
+                else if (curBit == 0 || curBit == 1)
                 {
-                    if (curLength)
+                    if (curPos == 1)
+                    {
+                        curLength = curBit;
+                        curPos++;
+                    }
+                    else if (curPos >= 2 && curPos <= 17)
+                    {
+                        if (curBit)
+                        {
+                            #if defined(USE_ESP_IDF)
+                            bitSetIDF(&curCMD, (curLength ? 33 : 17) - curPos);
+                            #else
+                            bitSet(curCMD, (curLength ? 33 : 17) - curPos);
+                            #endif
+                        }
+
+                        calCRC ^= curBit;
+                        curPos++;
+                    }
+                    else if (curPos == 18)
+                    {
+                        if (curLength)
+                        {
+                            if (curBit)
+                            {
+                                #if defined(USE_ESP_IDF)
+                                bitSetIDF(&curCMD, 33 - curPos);
+                                #else
+                                bitSet(curCMD, 33 - curPos);
+                                #endif
+                            }
+
+                            calCRC ^= curBit;
+                            curPos++;
+                        }
+                        else
+                        {
+                            curCRC = curBit;
+                            cmdIntReady = 1;
+                        }
+                    }
+                    else if (curPos >= 19 && curPos <= 33)
                     {
                         if (curBit)
                         {
@@ -230,53 +255,34 @@ namespace esphome
                             bitSet(curCMD, 33 - curPos);
                             #endif
                         }
-
+                        
                         calCRC ^= curBit;
                         curPos++;
                     }
-                    else
+                    else if (curPos == 34)
                     {
                         curCRC = curBit;
                         cmdIntReady = 1;
                     }
                 }
-                else if (curPos >= 19 && curPos <= 33)
+                else
                 {
-                    if (curBit)
+                    curPos = 0;
+                }
+
+                if (cmdIntReady)
+                {
+                    cmdIntReady = 0;
+
+                    if (curCRC == calCRC)
                     {
-                        #if defined(USE_ESP_IDF)
-                        bitSetIDF(&curCMD, 33 - curPos);
-                        #else
-                        bitSet(curCMD, 33 - curPos);
-                        #endif
+                        arg->s_cmdReady = true;
+                        arg->s_cmd = curCMD;
                     }
-                    
-                    calCRC ^= curBit;
-                    curPos++;
-                }
-                else if (curPos == 34)
-                {
-                    curCRC = curBit;
-                    cmdIntReady = 1;
-                }
-            }
-            else
-            {
-                curPos = 0;
-            }
 
-            if (cmdIntReady)
-            {
-                cmdIntReady = 0;
-
-                if (curCRC == calCRC)
-                {
-                    arg->s_cmdReady = true;
-                    arg->s_cmd = curCMD;
+                    curCMD = 0;
+                    curPos = 0;
                 }
-
-                curCMD = 0;
-                curPos = 0;
             }
         }
 
