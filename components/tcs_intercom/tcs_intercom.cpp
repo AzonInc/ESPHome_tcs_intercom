@@ -92,7 +92,7 @@ namespace esphome
 
         void TCSComponent::dump_config()
         {
-            ESP_LOGCONFIG(TAG, "TCS Intercom:");
+            ESP_LOGCONFIG(TAG, "TCS Intercom  (Glitch):");
             LOG_PIN("  Pin RX: ", this->rx_pin_);
             LOG_PIN("  Pin TX: ", this->tx_pin_);
 
