@@ -174,22 +174,26 @@ namespace esphome
             else if (timeInUS >= 1000 && timeInUS <= 2999)
             {
                 curBit = 0;
+                ESP_LOGD(TAG, "curBit: %i", curBit);
             }
             else if (timeInUS >= 3000 && timeInUS <= 4999)
             {
                 curBit = 1;
+                ESP_LOGD(TAG, "curBit: %i", curBit);
             }
             else if (timeInUS >= 5000 && timeInUS <= 6999)
             {
                 curBit = 2;
+                ESP_LOGD(TAG, "curBit: %i", curBit);
             }
             else if (timeInUS >= 7000 && timeInUS <= 24000)
             {
                 curBit = 3;
                 curPos = 0;
+                ESP_LOGD(TAG, "curBit: %i", curBit);
             }
 
-            ESP_LOGD(TAG, "curBit: %i, curPos: %i", curBit, curPos);
+            
 
             if (curBit != 5) { // skip processing for glitches
                 if (curPos == 0)
