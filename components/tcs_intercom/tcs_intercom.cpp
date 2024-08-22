@@ -189,6 +189,8 @@ namespace esphome
                 curPos = 0;
             }
 
+            ESP_LOGD(TAG, "curBit: %i, curPos: %i", curBit, curPos);
+
             if (curBit != 5) { // skip processing for glitches
                 if (curPos == 0)
                 {
