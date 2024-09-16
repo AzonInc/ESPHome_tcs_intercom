@@ -72,6 +72,8 @@ namespace esphome
 
                 text_sensor::TextSensor *bus_command_{nullptr};
                 text_sensor::TextSensor *hardware_version_{nullptr};
+
+                std::string hardware_version_str_ = "Generic";
         };
 
         template<typename... Ts> class TCSIntercomSendAction : public Action<Ts...>

@@ -49,24 +49,32 @@ namespace esphome
             if(ver[0] > 0)
             {
                 ESP_LOGI(TAG, "Doorman Hardware detected: V%i.%i.%i", ver[0], ver[1], ver[2]);
-                if (this->hardware_version_ != nullptr)
+                this->hardware_version_str_ = "Doorman " + std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]);
+
+                // Override GPIO
+                if(ver[0] == 1 && (ver[1] == 3 || ver[1] == 4))
                 {
-                    this->hardware_version_->publish_state("Doorman " + std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]));
+                    esp32::ESP32InternalGPIOPin *gpio_pin_rx_;
+                    gpio_pin_rx_ = new(esp32::ESP32InternalGPIOPin);
+                    gpio_pin_rx_->set_pin(static_cast<gpio_num_t>(9));
+                    gpio_pin_rx_->set_flags(gpio::Flags::FLAG_INPUT);
+                    this->set_rx_pin(gpio_pin_rx_);
+
+                    esp32::ESP32InternalGPIOPin *gpio_pin_tx_;
+                    gpio_pin_tx_ = new(esp32::ESP32InternalGPIOPin);
+                    gpio_pin_tx_->set_pin(static_cast<gpio_num_t>(8));
+                    gpio_pin_tx_->set_flags(gpio::Flags::FLAG_OUTPUT);
+                    this->set_tx_pin(gpio_pin_tx_);
+
+                    ESP_LOGD(TAG, "Doorman Hardware GPIO Override: RX (%i), TX (%i)", this->rx_pin_->get_pin(), this->tx_pin_->get_pin());
                 }
-            }
-            else
-            {
-                if (this->hardware_version_ != nullptr)
-                {
-                    this->hardware_version_->publish_state("Generic");
-                }
-            }
-            #else
-            if (this->hardware_version_ != nullptr)
-            {
-                this->hardware_version_->publish_state("Generic");
             }
             #endif
+
+            if (this->hardware_version_ != nullptr)
+            {
+                this->hardware_version_->publish_state(this->hardware_version_str_);
+            }
 
 
             this->rx_pin_->setup();
@@ -105,7 +113,12 @@ namespace esphome
                 ESP_LOGCONFIG(TAG, "  Event: disabled");
             }
 
-            ESP_LOGCONFIG(TAG, "  Hardware: %s", this->hardware_version_->state.c_str());
+            if (this->hardware_version_ != nullptr)
+            {
+                this->hardware_version_->publish_state("Generic");
+            }
+
+            ESP_LOGCONFIG(TAG, "  Hardware: %s", this->hardware_version_str_.c_str());
         }
 
         void TCSComponent::loop()
