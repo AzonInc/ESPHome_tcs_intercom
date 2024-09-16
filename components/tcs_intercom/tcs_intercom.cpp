@@ -1,9 +1,12 @@
 #include "tcs_intercom.h"
 
+#include "esphome.h"
 #include "esphome/core/application.h"
 #include "esphome/core/defines.h"
 #include "esphome/core/log.h"
 #include "esphome/core/hal.h"
+#include "esphome/core/component.h"
+#include "esphome/core/helpers.h"
 
 #include "esphome/components/api/custom_api_device.h"
 #include "esphome/core/application.h"
@@ -18,6 +21,7 @@
 #endif
 
 #include <stdint.h>
+#include <optional>
 
 namespace esphome
 {
