@@ -49,24 +49,32 @@ namespace esphome
             if(ver[0] > 0)
             {
                 ESP_LOGI(TAG, "Doorman Hardware detected: V%i.%i.%i", ver[0], ver[1], ver[2]);
-                if (this->hardware_version_ != nullptr)
+                this->hardware_version_str_ = "Doorman " + std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]);
+
+                // Override GPIO
+                if(ver[0] == 1 && (ver[1] == 3 || ver[1] == 4))
                 {
-                    this->hardware_version_->publish_state("Doorman " + std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]));
+                    esp32::ESP32InternalGPIOPin *gpio_pin_rx_;
+                    gpio_pin_rx_ = new(esp32::ESP32InternalGPIOPin);
+                    gpio_pin_rx_->set_pin(static_cast<gpio_num_t>(9));
+                    gpio_pin_rx_->set_flags(gpio::Flags::FLAG_INPUT);
+                    this->set_rx_pin(gpio_pin_rx_);
+
+                    esp32::ESP32InternalGPIOPin *gpio_pin_tx_;
+                    gpio_pin_tx_ = new(esp32::ESP32InternalGPIOPin);
+                    gpio_pin_tx_->set_pin(static_cast<gpio_num_t>(8));
+                    gpio_pin_tx_->set_flags(gpio::Flags::FLAG_OUTPUT);
+                    this->set_tx_pin(gpio_pin_tx_);
+
+                    ESP_LOGD(TAG, "Doorman Hardware GPIO Override: RX (%i), TX (%i)", this->rx_pin_->get_pin(), this->tx_pin_->get_pin());
                 }
-            }
-            else
-            {
-                if (this->hardware_version_ != nullptr)
-                {
-                    this->hardware_version_->publish_state("Generic");
-                }
-            }
-            #else
-            if (this->hardware_version_ != nullptr)
-            {
-                this->hardware_version_->publish_state("Generic");
             }
             #endif
+
+            if (this->hardware_version_ != nullptr)
+            {
+                this->hardware_version_->publish_state(this->hardware_version_str_);
+            }
 
 
             this->rx_pin_->setup();
@@ -105,7 +113,12 @@ namespace esphome
                 ESP_LOGCONFIG(TAG, "  Event: disabled");
             }
 
-            ESP_LOGCONFIG(TAG, "  Hardware: %s", this->hardware_version_->state.c_str());
+            if (this->hardware_version_ != nullptr)
+            {
+                this->hardware_version_->publish_state("Generic");
+            }
+
+            ESP_LOGCONFIG(TAG, "  Hardware: %s", this->hardware_version_str_.c_str());
         }
 
         void TCSComponent::loop()
@@ -167,7 +180,11 @@ namespace esphome
 
             uint8_t curBit = 4;
 
-            if (timeInUS >= 1000 && timeInUS <= 2999)
+            if (timeInUS < 1000)
+            {
+                curBit = 5; // invalid glitches typical 29ms
+            }
+            else if (timeInUS >= 1000 && timeInUS <= 2999)
             {
                 curBit = 0;
             }
@@ -185,42 +202,63 @@ namespace esphome
                 curPos = 0;
             }
 
-            if (curPos == 0)
-            {
-                if (curBit == 2)
+            if (curBit != 5) { // skip processing for glitches
+                if (curPos == 0)
                 {
-                    curPos++;
-                }
-
-                curCMD = 0;
-                curCRC = 0;
-                calCRC = 1;
-                curLength = 0;
-            }
-            else if (curBit == 0 || curBit == 1)
-            {
-                if (curPos == 1)
-                {
-                    curLength = curBit;
-                    curPos++;
-                }
-                else if (curPos >= 2 && curPos <= 17)
-                {
-                    if (curBit)
+                    if (curBit == 2)
                     {
-                        #if defined(USE_ESP_IDF)
-                        bitSetIDF(&curCMD, (curLength ? 33 : 17) - curPos);
-                        #else
-                        bitSet(curCMD, (curLength ? 33 : 17) - curPos);
-                        #endif
+                        curPos++;
                     }
 
-                    calCRC ^= curBit;
-                    curPos++;
+                    curCMD = 0;
+                    curCRC = 0;
+                    calCRC = 1;
+                    curLength = 0;
                 }
-                else if (curPos == 18)
+                else if (curBit == 0 || curBit == 1)
                 {
-                    if (curLength)
+                    if (curPos == 1)
+                    {
+                        curLength = curBit;
+                        curPos++;
+                    }
+                    else if (curPos >= 2 && curPos <= 17)
+                    {
+                        if (curBit)
+                        {
+                            #if defined(USE_ESP_IDF)
+                            bitSetIDF(&curCMD, (curLength ? 33 : 17) - curPos);
+                            #else
+                            bitSet(curCMD, (curLength ? 33 : 17) - curPos);
+                            #endif
+                        }
+
+                        calCRC ^= curBit;
+                        curPos++;
+                    }
+                    else if (curPos == 18)
+                    {
+                        if (curLength)
+                        {
+                            if (curBit)
+                            {
+                                #if defined(USE_ESP_IDF)
+                                bitSetIDF(&curCMD, 33 - curPos);
+                                #else
+                                bitSet(curCMD, 33 - curPos);
+                                #endif
+                            }
+
+                            calCRC ^= curBit;
+                            curPos++;
+                        }
+                        else
+                        {
+                            curCRC = curBit;
+                            cmdIntReady = 1;
+                        }
+                    }
+                    else if (curPos >= 19 && curPos <= 33)
                     {
                         if (curBit)
                         {
@@ -230,53 +268,34 @@ namespace esphome
                             bitSet(curCMD, 33 - curPos);
                             #endif
                         }
-
+                        
                         calCRC ^= curBit;
                         curPos++;
                     }
-                    else
+                    else if (curPos == 34)
                     {
                         curCRC = curBit;
                         cmdIntReady = 1;
                     }
                 }
-                else if (curPos >= 19 && curPos <= 33)
+                else
                 {
-                    if (curBit)
+                    curPos = 0;
+                }
+
+                if (cmdIntReady)
+                {
+                    cmdIntReady = 0;
+
+                    if (curCRC == calCRC)
                     {
-                        #if defined(USE_ESP_IDF)
-                        bitSetIDF(&curCMD, 33 - curPos);
-                        #else
-                        bitSet(curCMD, 33 - curPos);
-                        #endif
+                        arg->s_cmdReady = true;
+                        arg->s_cmd = curCMD;
                     }
-                    
-                    calCRC ^= curBit;
-                    curPos++;
-                }
-                else if (curPos == 34)
-                {
-                    curCRC = curBit;
-                    cmdIntReady = 1;
-                }
-            }
-            else
-            {
-                curPos = 0;
-            }
 
-            if (cmdIntReady)
-            {
-                cmdIntReady = 0;
-
-                if (curCRC == calCRC)
-                {
-                    arg->s_cmdReady = true;
-                    arg->s_cmd = curCMD;
+                    curCMD = 0;
+                    curPos = 0;
                 }
-
-                curCMD = 0;
-                curPos = 0;
             }
         }
 
@@ -284,7 +303,7 @@ namespace esphome
         {
             // Convert to HEX
             char byte_cmd[9];
-            sprintf(byte_cmd, "%08x", command);
+            sprintf(byte_cmd, "%08X", command);
 
             // Publish Command to Sensors
             if (this->bus_command_ != nullptr)
