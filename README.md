@@ -1,6 +1,9 @@
-TCS/Koch Intercom Component
+❌ TCS/Koch Intercom Component
 ===================
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AzonInc/ESPHome_tcs_intercom/build.yaml?branch=master&style=for-the-badge&logo=buddy&logoColor=ffffff&label=Build)
+===================
+
+⚠️ This component has been merged into the Doorman repository as [TC:BUS](https://github.com/AzonInc/Doorman/tree/master/components/tc_bus) and now shares the same [documentation](https://doorman-dev.surge.sh/reference/esphome-component). As a result, this repository is no longer actively developed. Please refer to the [Doorman](https://github.com/AzonInc/Doorman/) repository for further updates. ⚠️
 ===================
 
 The `tcs_intercom` Component allows you to easily communicate on a [TCS:Bus](https://www.tcsag.de/) and [Koch TC:Bus](https://kochag.ch/) with ESPHome and Home Assistant.
