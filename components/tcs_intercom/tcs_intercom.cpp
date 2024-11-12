@@ -11,10 +11,12 @@
 #include "esphome/components/api/custom_api_device.h"
 #include "esphome/core/application.h"
 
+#if defined(USE_ESP_IDF) || (defined(USE_ARDUINO) && defined(ESP32))
 #include "soc/efuse_reg.h"
 #include "soc/efuse_periph.h"
 #include "esp_efuse.h"
 #include "esp_efuse_table.h"
+#endif
 
 #ifdef USE_ARDUINO
 #include "Arduino.h"

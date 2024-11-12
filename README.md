@@ -1,9 +1,19 @@
-❌ TCS/Koch Intercom Component
-===================
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AzonInc/ESPHome_tcs_intercom/build.yaml?branch=master&style=for-the-badge&logo=buddy&logoColor=ffffff&label=Build)
-===================
+# ⚠️ This Repository Has Moved! ⚠️
 
-⚠️ This component has been merged into the Doorman repository as [TC:BUS](https://github.com/AzonInc/Doorman/tree/master/components/tc_bus) and now shares the same [documentation](https://doorman-dev.surge.sh/reference/esphome-component). As a result, this repository is no longer actively developed. Please refer to the [Doorman](https://github.com/AzonInc/Doorman/) repository for further updates. ⚠️
+All future updates, improvements, and support are now hosted in our new home: [**Doorman**](https://github.com/AzonInc/Doorman)!
+
+### Key Resources for a Smooth Transition:
+- 🚀 **New TC:BUS Component**: Explore the latest version [here](https://github.com/AzonInc/Doorman/tree/master/components/tc_bus), with improved functionality and streamlined setup.
+- 📚 **Expanded Documentation**: Visit the updated [TC:BUS ESPHome docs](https://doorman.azon.ai/reference/esphome-component) for in-depth guides, examples, and usage tips.
+
+## Ready to Migrate?
+Check out [this example configuration](https://doorman.azon.ai/reference/esphome-component#example-yaml-configuration) to help you migrate from `tcs_intercom` to the upgraded `tc_bus` ESPHome component. It's as simple as replacing `tcs_intercom` with `tc_bus` and updating platform keys accordingly.
+
+Thank you for moving with us! The Doorman repository is ready to offer you the latest and most advanced features for TC:BUS.
+
+
+# ❌ TCS/Koch Intercom Component (DEPRECATED)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AzonInc/ESPHome_tcs_intercom/build.yaml?branch=master&style=for-the-badge&logo=buddy&logoColor=ffffff&label=Build)
 ===================
 
 The `tcs_intercom` Component allows you to easily communicate on a [TCS:Bus](https://www.tcsag.de/) and [Koch TC:Bus](https://kochag.ch/) with ESPHome and Home Assistant.
